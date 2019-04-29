@@ -4,7 +4,7 @@
 import os, time, multiprocessing
 import numpy as np
 import tensorflow as tf
-tf.enable_eager_execution() # for TF 1.13
+#tf.enable_eager_execution() # for TF 1.13
 import tensorlayer as tl
 from glob import glob
 from utils import get_celebA, flags # get_image
