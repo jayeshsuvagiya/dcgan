@@ -35,7 +35,7 @@ tl.files.exists_or_mkdir(flags.FLAGS.sample_dir) # save generated image
 
 def get_celebA(output_size, n_epoch, batch_size):
     # dataset API and augmentation
-    images_path = tl.files.load_file_list(path='content/gdrive/My Drive/UF/JGAN/data/128', regx='.*.jpg', keep_prefix=True, printable=False)
+    images_path = tl.files.load_file_list(path='/content/gdrive/My Drive/UF/JGAN/data/128', regx='.*.jpg', keep_prefix=True, printable=False)
     def generator_train():
         for image_path in images_path:
             yield image_path.encode('utf-8')
