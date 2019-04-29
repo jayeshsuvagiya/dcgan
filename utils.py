@@ -7,6 +7,7 @@ tl.logging.set_verbosity(tl.logging.DEBUG)
 
 # Define TF Flags
 flags = tf.app.flags
+flags.DEFINE_string('f', '', 'kernel')
 flags.DEFINE_integer("n_epoch", 25, "Epoch to train [25]")
 flags.DEFINE_integer("z_dim", 100, "Num of noise value]")
 flags.DEFINE_float("learning_rate", 0.0002, "Learning rate of for adam [0.0002]")
@@ -24,7 +25,7 @@ flags.DEFINE_string("checkpoint_dir", "checkpoint", "Directory name to save the 
 flags.DEFINE_string("sample_dir", "samples", "Directory name to save the image samples [samples]")
 flags.DEFINE_boolean("is_train", False, "True for training, False for testing [False]")
 flags.DEFINE_boolean("is_crop", True, "True for training, False for testing [False]")
-#assert np.sqrt(flags.FLAGS.sample_size) % 1 == 0., 'Flag `sample_size` needs to be a perfect square'
+assert np.sqrt(flags.FLAGS.sample_size) % 1 == 0., 'Flag `sample_size` needs to be a perfect square'
 tl.files.exists_or_mkdir(flags.FLAGS.checkpoint_dir) # save model
 tl.files.exists_or_mkdir(flags.FLAGS.sample_dir) # save generated image
 
