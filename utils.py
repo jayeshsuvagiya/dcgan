@@ -24,7 +24,7 @@ flags.DEFINE_string("checkpoint_dir", "checkpoint", "Directory name to save the 
 flags.DEFINE_string("sample_dir", "samples", "Directory name to save the image samples [samples]")
 flags.DEFINE_boolean("is_train", False, "True for training, False for testing [False]")
 flags.DEFINE_boolean("is_crop", True, "True for training, False for testing [False]")
-assert np.sqrt(flags.FLAGS.sample_size) % 1 == 0., 'Flag `sample_size` needs to be a perfect square'
+#assert np.sqrt(flags.FLAGS.sample_size) % 1 == 0., 'Flag `sample_size` needs to be a perfect square'
 tl.files.exists_or_mkdir(flags.FLAGS.checkpoint_dir) # save model
 tl.files.exists_or_mkdir(flags.FLAGS.sample_dir) # save generated image
 
