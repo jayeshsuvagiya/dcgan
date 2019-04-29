@@ -14,7 +14,7 @@ flags.DEFINE_float("learning_rate", 0.0002, "Learning rate of for adam [0.0002]"
 flags.DEFINE_float("beta1", 0.5, "Momentum term of adam [0.5]")
 flags.DEFINE_float("train_size", np.inf, "The size of train images [np.inf]")
 flags.DEFINE_integer("batch_size", 64, "The number of batch images [64]")
-flags.DEFINE_integer("image_size", 108, "The size of image to use (will be center cropped) [108]")
+flags.DEFINE_integer("image_size", 128, "The size of image to use (will be center cropped) [108]")
 flags.DEFINE_integer("output_size", 64, "The size of the output images to produce [64]")
 flags.DEFINE_integer("sample_size", 64, "The number of sample images [64]")
 # flags.DEFINE_integer("c_dim", 3, "Number of image channels. [3]")
@@ -35,7 +35,7 @@ tl.files.exists_or_mkdir(flags.FLAGS.sample_dir) # save generated image
 
 def get_celebA(output_size, n_epoch, batch_size):
     # dataset API and augmentation
-    images_path = tl.files.load_file_list(path='data', regx='.*.jpg', keep_prefix=True, printable=False)
+    images_path = tl.files.load_file_list(path='content/gdrive/My Drive/UF/JGAN/data/128', regx='.*.jpg', keep_prefix=True, printable=False)
     def generator_train():
         for image_path in images_path:
             yield image_path.encode('utf-8')
@@ -45,11 +45,11 @@ def get_celebA(output_size, n_epoch, batch_size):
         image = tf.image.convert_image_dtype(image, dtype=tf.float32)
         # image = tf.image.crop_central(image, [FLAGS.output_size, FLAGS.output_size, FLAGS.c_dim])
         # image = tf.image.resize_images(image, FLAGS.output_size])
-        image = image[45:173, 25:153, :]
+        #image = image[45:173, 25:153, :]
         image = tf.image.resize_bicubic([image], (output_size, output_size))[0]
         # image = tf.image.crop_and_resize(image, boxes=[[]], crop_size=[64, 64])
         # image = tf.image.resize_image_with_crop_or_pad(image, FLAGS.output_size, FLAGS.output_size) # central crop
-        image = tf.image.random_flip_left_right(image)
+        #image = tf.image.random_flip_left_right(image)
         image = image * 2 - 1
         return image
     train_ds = tf.data.Dataset.from_generator(generator_train, output_types=tf.string)
