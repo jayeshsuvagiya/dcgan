@@ -7,8 +7,8 @@ import tensorflow as tf
 #tf.enable_eager_execution() # for TF 1.13
 import tensorlayer as tl
 from glob import glob
-from utils import get_celebA, flags # get_image
-from model import get_generator, get_discriminator
+from dcgan.utils import get_celebA, flags # get_image
+from dcgan.model import get_generator, get_discriminator
 
 FLAGS = flags.FLAGS
 num_tiles = int(np.sqrt(FLAGS.sample_size))
