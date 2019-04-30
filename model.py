@@ -6,7 +6,7 @@ flags = tf.app.flags
 FLAGS = flags.FLAGS
 
 def get_generator(shape, gf_dim=64): # Dimension of gen filters in first conv layer. [64]
-    image_size = 64
+    image_size = 256
     s16 = image_size // 16
     w_init = tf.glorot_normal_initializer()
     gamma_init = tf.random_normal_initializer(1., 0.02)
