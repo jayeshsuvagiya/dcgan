@@ -25,9 +25,9 @@ def train():
     g_optimizer = tf.train.AdamOptimizer(FLAGS.learning_rate, beta1=FLAGS.beta1)
 
     n_step_epoch = int(len(images_path) // FLAGS.batch_size)
-
+    step_time = time.time()
     for step, batch_images in enumerate(images):
-        step_time = time.time()
+        #step_time = time.time()
         with tf.GradientTape(persistent=True) as tape:
             z = tf.contrib.distributions.Normal(0., 1.).sample([FLAGS.batch_size, FLAGS.z_dim]) #tf.placeholder(tf.float32, [None, z_dim], name='z_noise')
             d_logits = D(G(z))
@@ -47,12 +47,33 @@ def train():
         d_optimizer.apply_gradients(zip(grad, D.weights))
         del tape
 
-        print("Epoch: [{}/{}] [{}/{}] took: {:3f}, d_loss: {:5f}, g_loss: {:5f}".format(step//n_step_epoch, FLAGS.n_epoch, step, n_step_epoch, time.time()-step_time, d_loss, g_loss))
+        #print("Epoch: [{}/{}] [{}/{}] took: {:3f}, d_loss: {:5f}, g_loss: {:5f}".format(step//n_step_epoch, FLAGS.n_epoch, step, n_step_epoch, time.time()-step_time, d_loss, g_loss))
+        if np.mod(step,n_step_epoch) == 0:
+            fid = tf.contrib.gan.eval.frechet_classifier_distance(batch_images, G(z), D, num_batches=8)
+            print("Epoch: [{}/{}] [{}/{}] took: {:3f}, d_loss: {:5f}, g_loss: {:5f}, fid: {:5f}".format(step // n_step_epoch,
+                FLAGS.n_epoch, step,
+                n_step_epoch,
+                time.time() - step_time,
+                d_loss, g_loss, fid))
+            step_time = time.time()
+
         if np.mod(step, FLAGS.save_step) == 0:
             G.save_weights('{}/G.npz'.format(FLAGS.checkpoint_dir), format='npz')
             D.save_weights('{}/D.npz'.format(FLAGS.checkpoint_dir), format='npz')
             result = G(z)
             tl.visualize.save_images(result.numpy(), [num_tiles, num_tiles], '{}/train_{:02d}_{:04d}.png'.format(FLAGS.sample_dir, step//n_step_epoch, step))
+
+    fid = tf.contrib.gan.eval.frechet_classifier_distance(batch_images, G(z), D, num_batches=8)
+    print("Epoch: [{}/{}] [{}/{}] took: {:3f}, d_loss: {:5f}, g_loss: {:5f}, fid: {:5f}".format(step // n_step_epoch,
+                                                                                                FLAGS.n_epoch, step,
+                                                                                                n_step_epoch,
+                                                                                                time.time() - step_time,
+                                                                                                d_loss, g_loss, fid))
+    result = G(z).numpy()
+    tl.visualize.save_images(result, [num_tiles, num_tiles],
+                             '{}/train_{:02d}_{:04d}.png'.format(FLAGS.sample_dir, step // n_step_epoch, step))
+    for i in range(result.shape[0]):
+        tl.visualize.save_image(result[i, :, :, :], '{}/train_{:02d}.png'.format(FLAGS.sample_dir, i))
 
 if __name__ == '__main__':
     train()

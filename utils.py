@@ -8,8 +8,8 @@ tl.logging.set_verbosity(tl.logging.DEBUG)
 # Define TF Flags
 flags = tf.app.flags
 flags.DEFINE_string('f', '', 'kernel')
-flags.DEFINE_integer("n_epoch", 50, "Epoch to train [25]")
-flags.DEFINE_integer("z_dim", 100, "Num of noise value]")
+flags.DEFINE_integer("n_epoch", 200, "Epoch to train [25]")
+flags.DEFINE_integer("z_dim", 256, "Num of noise value]")
 flags.DEFINE_float("learning_rate", 0.0002, "Learning rate of for adam [0.0002]")
 flags.DEFINE_float("beta1", 0.5, "Momentum term of adam [0.5]")
 flags.DEFINE_float("train_size", np.inf, "The size of train images [np.inf]")
@@ -46,7 +46,7 @@ def get_celebA(output_size, n_epoch, batch_size):
         # image = tf.image.crop_central(image, [FLAGS.output_size, FLAGS.output_size, FLAGS.c_dim])
         # image = tf.image.resize_images(image, FLAGS.output_size])
         #image = image[45:173, 25:153, :]
-        image = tf.image.resize_bicubic([image], (output_size, output_size))[0]
+        #image = tf.image.resize_bicubic([image], (output_size, output_size))[0]
         # image = tf.image.crop_and_resize(image, boxes=[[]], crop_size=[64, 64])
         # image = tf.image.resize_image_with_crop_or_pad(image, FLAGS.output_size, FLAGS.output_size) # central crop
         #image = tf.image.random_flip_left_right(image)
