@@ -5,16 +5,18 @@ from tensorlayer.layers import Input, Dense, DeConv2d, Reshape, BatchNorm2d, Con
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 
-def get_generator(shape, gf_dim=64): # Dimension of gen filters in first conv layer. [64]
+def get_generator(shape, gf_dim=128): # Dimension of gen filters in first conv layer. [64]
     image_size = FLAGS.output_size
-    s16 = image_size // 16
+    s16 = image_size // 32
     w_init = tf.glorot_normal_initializer()
     gamma_init = tf.random_normal_initializer(1., 0.02)
 
     ni = Input(shape)
-    nn = Dense(n_units=(gf_dim * 8 * s16 * s16), W_init=w_init, b_init=None)(ni)
-    nn = Reshape(shape=[-1, s16, s16, gf_dim*8])(nn)
+    nn = Dense(n_units=(gf_dim * 16 * s16 * s16), W_init=w_init, b_init=None)(ni)
+    nn = Reshape(shape=[-1, s16, s16, gf_dim*16])(nn)
     nn = BatchNorm(decay=0.9, act=tf.nn.relu, gamma_init=gamma_init, name=None)(nn)
+    nn = DeConv2d(gf_dim * 8, (5, 5), (2, 2), W_init=w_init, b_init=None)(nn)
+    nn = BatchNorm2d(decay=0.9, act=tf.nn.relu, gamma_init=gamma_init)(nn)
     nn = DeConv2d(gf_dim * 4, (5, 5), (2, 2), W_init=w_init, b_init=None)(nn)
     nn = BatchNorm2d( decay=0.9, act=tf.nn.relu, gamma_init=gamma_init)(nn)
     nn = DeConv2d(gf_dim * 2, (5, 5), (2, 2), W_init=w_init, b_init=None)(nn)
@@ -25,7 +27,7 @@ def get_generator(shape, gf_dim=64): # Dimension of gen filters in first conv la
 
     return tl.models.Model(inputs=ni, outputs=nn, name='generator')
 
-def get_discriminator(shape, df_dim=64): # Dimension of discrim filters in first conv layer. [64]
+def get_discriminator(shape, df_dim=128): # Dimension of discrim filters in first conv layer. [64]
     w_init = tf.glorot_normal_initializer()
     gamma_init = tf.random_normal_initializer(1., 0.02)
     lrelu = lambda x : tf.nn.leaky_relu(x, 0.2)
